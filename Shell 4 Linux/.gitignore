@@ -1,0 +1,13 @@
+# Ignore object files
+*.o
+
+# Ignore executable files
+*.out
+ASN-2
+
+# Ignore build directories (if applicable)
+build/
+bin/
+
+# Ignore other temporary files (example)
+*.log
