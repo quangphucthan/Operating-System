@@ -11,3 +11,6 @@ bin/
 
 # Ignore other temporary files (example)
 *.log
+
+*.zip
+*.tar.gz
