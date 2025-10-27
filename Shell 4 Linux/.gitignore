@@ -14,3 +14,5 @@ bin/
 
 *.zip
 *.tar.gz
+
+*.DS_Store
