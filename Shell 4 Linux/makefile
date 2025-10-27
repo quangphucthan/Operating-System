@@ -1,2 +1,2 @@
-ASN-2: main.c
-	gcc main.c -o ASN-2
+linuxshell: main.c
+	gcc main.c -o linuxshell
