@@ -33,7 +33,7 @@ int main() {
     int historyCount = 0;
 
     while (flag) {
-        printf("CSCI3120>");
+        printf("Terminal>");
         fflush(stdout);
 
         // Read user input
