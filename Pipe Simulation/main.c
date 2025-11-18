@@ -4,14 +4,15 @@
 #include <sys/wait.h>
 #include <string.h>
 
-#define MAX_LINES 80
+#define MAX_WORDS 80
 
 int main() {
-    char input[MAX_LINES];
-    char *args[MAX_LINES / 2 + 1];
+    char input[MAX_WORDS];
+    char *args[MAX_WORDS / 2 + 1];
     int flag = 1;
     int wait_status;
-    int fd[2];
+    int fd1[2];
+    int fd2[2];
 
     while (flag) {
         printf("Please Enter Your Sentence: ");
@@ -34,18 +35,51 @@ int main() {
             continue;
         }
 
+        if (pipe(fd1) == -1)  {
+            perror("pipe");
+            exit(1);
+        }
+
+        if (pipe(fd2) == -1) {
+            perror("pipe");
+            exit(1);
+        }
+
         pid_t pid = fork();
 
         if (pid < 0) {
-            fprintf(stderr, "Fork failed\n");
+            perror("fork");
             exit(1);
         }
-        else if (pid == 0) {
-            // Child process
+        else if (pid > 0) {
+            // Parent process
+            close(fd1[0]);
+
+            write(fd1[1], input, strlen(input) + 1);
+            close(fd1[1]);
+
+            wait(&wait_status);
+
+            close(fd2[1]);
         }
         else {
-            wait(&wait_status);
-        }
+            // Child process
+            close(fd1[1]);
+            
+            char sentString[MAX_WORDS];
+            read(fd1[0], sentString, MAX_WORDS);
+
+
+            for (int i = 0; i < strlen(sentString); i++) {
+                char a = sentString[i];
+                a ^= 32;
+                sentString[i] = a;
+            }
+
+            sentString[strlen(sentString)] = '\0';
+
+            close(fd1[0]);
+            close(fd2[0]);
 
     }
 }
