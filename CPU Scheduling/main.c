@@ -34,16 +34,26 @@ int main() {
 }
 
 void FCFS(char tasks[][3], int arrival[], int burst[], int count) {
-    int answers = 0;
     printf("FCFS:\n");
+    int holder = 0;
+    int total = 0;
+
+    for (int i = 1; i < count; i++) {
+        arrival[i] = burst[i - 1];
+        burst[i] += burst[i - 1];
+    }
 
     for (int i = 0; i < count; i++) {
         printf("%s\t", tasks[i]);
         printf("%d\t", arrival[i]);
         printf("%d\n", burst[i]);
-
-        answers += arrival[i] - i;
     }
 
-    printf("Wating Time %s: %d\n", tasks[count-1], answers);
+    for (int i = 0; i < count; i++) {
+        holder = arrival[i] - i;
+        printf("Waiting Time %s: %d\n", tasks[i], holder);
+    }
+
+    float avgAnswer = (float)holder / count;
+    printf("Average Waiting Time: %2f\n", avgAnswer);
 }
