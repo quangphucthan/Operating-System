@@ -7,6 +7,7 @@
 #define TIME_QUANTUM 4
 void FCFS(char tasks[][3], int arrival[], int burst[], int count);
 void RR(char tasks[][3], int arrival[], int burst[], int count);
+FILE *fWrite;
 
 int main() {
     char tasks[MAX][3];
@@ -17,6 +18,9 @@ int main() {
 
     FILE *file;
     file = fopen("TaskSpec.txt", "r");
+
+    // Open output file
+    fWrite = fopen("Output.txt", "w");
 
     if (file == NULL) {
         perror("Error opening file");
@@ -37,38 +41,41 @@ int main() {
 }
 
 void FCFS(char tasks[][3], int arrival[], int burst[], int count) {
-    printf("FCFS:\n");
+    fprintf(fWrite, "FCFS:\n");
     int holder = 0;
     int total = 0;
-    int fcfsArrival[MAX];
-    int fcfsBurst[MAX];
+    int fcfsStart[MAX];
+    int fcfsEnd[MAX];
+    
+    // Copy original arrays -> calculation arrays
+    memcpy(fcfsStart, arrival, sizeof(int) * count);
+    memcpy(fcfsEnd, burst, sizeof(int) * count);
 
-    memcpy(fcfsArrival, arrival, sizeof(int) * count);
-    memcpy(fcfsBurst, burst, sizeof(int) * count);
-
+    // Calculate waiting times and turnaround times
     for (int i = 1; i < count; i++) {
-        fcfsArrival[i] = fcfsBurst[i - 1];
-        fcfsBurst[i] += fcfsBurst[i - 1];
+        fcfsStart[i] = fcfsEnd[i - 1];
+        fcfsEnd[i] += fcfsEnd[i - 1];
     }
 
     for (int i = 0; i < count; i++) {
-        printf("%s\t", tasks[i]);
-        printf("%d\t", fcfsArrival[i]);
-        printf("%d\n", fcfsBurst[i]);
+        fprintf(fWrite, "%s\t", tasks[i]);
+        fprintf(fWrite, "%d\t", fcfsStart[i]);
+        fprintf(fWrite, "%d\n", fcfsEnd[i]);
     }
 
+    // Calculate total waiting time
     for (int i = 0; i < count; i++) {
-        holder = fcfsArrival[i] - i;
+        holder = fcfsStart[i] - i;
         total += holder;
-        printf("Waiting Time %s: %d\n", tasks[i], holder);
+        fprintf(fWrite, "Waiting Time %s: %d\n", tasks[i], holder);
     }
 
     float avgAnswer = (float)total / count;
-    printf("Average Waiting Time: %.2f\n", avgAnswer);
+    fprintf(fWrite, "Average Waiting Time: %.2f\n", avgAnswer);
 }
 
 void RR(char tasks[][3], int arrival[], int burst[], int count) {
-    printf("\nRR: \n");
+    fprintf(fWrite, "\nRR: \n");
 
     int remBurst[MAX];
     int waitTime[MAX] = {0};
@@ -81,6 +88,7 @@ void RR(char tasks[][3], int arrival[], int burst[], int count) {
     int front = 0, rear = 0;
     bool inQueue[MAX] = {false};
 
+    // Create remaining burst time array based on original burst times
     memcpy(remBurst, burst, sizeof(int) * count);
 
     // Push processes that arrive at time 0
@@ -96,7 +104,7 @@ void RR(char tasks[][3], int arrival[], int burst[], int count) {
          // Queue empty
         if (front == rear) {
             time++;
-            
+
             // Check for new arrivals at this new time
             for(int i = 0; i < count; i++) {
                 if (arrival[i] <= time && remBurst[i] > 0 && !inQueue[i]) {
@@ -138,17 +146,18 @@ void RR(char tasks[][3], int arrival[], int burst[], int count) {
             waitTime[idx] = time - arrival[idx] - burst[idx];
         }
 
-        printf("%s\t", tasks[idx]);
-        printf("%d\t", time - execTime);
-        printf("%d\n", time);
+        fprintf(fWrite, "%s\t", tasks[idx]);
+        fprintf(fWrite, "%d\t", time - execTime);
+        fprintf(fWrite, "%d\n", time);
     }
     
 
+    // Calculate total waiting time
     for (int i = 0; i < count; i++) {
         totalWait += waitTime[i];
-        printf("Waiting Time %s: %d\n", tasks[i], waitTime[i]);
+        fprintf(fWrite, "Waiting Time %s: %d\n", tasks[i], waitTime[i]);
     }
 
     float avgWait = (float)totalWait / count;
-    printf("Average Waiting Time: %.2f\n", avgWait);
+    fprintf(fWrite, "Average Waiting Time: %.2f\n", avgWait);
 }
