@@ -116,6 +116,7 @@ void RR(char tasks[][3], int arrival[], int burst[], int count) {
             continue;
         }
 
+        // Dequeue for execution
         int idx = queue[front % MAX];
         front++;
         inQueue[idx] = false;

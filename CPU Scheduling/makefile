@@ -1,8 +1,7 @@
-ASN-4: main.c
-	gcc main.c -o ASN-4
+CpuScheduling: main.c
+	gcc main.c -o CpuScheduling
 
 clean:
-	rm -f ASN-4
-
+	rm -f CpuScheduling
 run:
-	./ASN-4
+	./CpuScheduling
