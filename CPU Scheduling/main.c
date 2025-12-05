@@ -51,9 +51,10 @@ void FCFS(char tasks[][3], int arrival[], int burst[], int count) {
 
     for (int i = 0; i < count; i++) {
         holder = arrival[i] - i;
+        total += holder;
         printf("Waiting Time %s: %d\n", tasks[i], holder);
     }
 
-    float avgAnswer = (float)holder / count;
+    float avgAnswer = (float)total / count;
     printf("Average Waiting Time: %2f\n", avgAnswer);
 }
