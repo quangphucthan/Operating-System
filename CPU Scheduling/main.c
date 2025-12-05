@@ -56,5 +56,5 @@ void FCFS(char tasks[][3], int arrival[], int burst[], int count) {
     }
 
     float avgAnswer = (float)total / count;
-    printf("Average Waiting Time: %2f\n", avgAnswer);
+    printf("Average Waiting Time: %.2f\n", avgAnswer);
 }
